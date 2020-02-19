@@ -1,2 +1,2 @@
-# HomeworkC-
+# HomeworkC++
 OOP-C++
