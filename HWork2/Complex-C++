@@ -1,0 +1,216 @@
+// This project is created by Eyüp ÖZMEN
+// I want to create 'Complex' class and try to make such operations like add , substract etc.
+
+
+#include "hWork2.h" // include to class
+#include <iostream>
+#include <iomanip> //added for the setprecision
+
+using namespace std;
+
+void complexSortPrint(Complex c[],int n) { // general func. to sort complex numbers
+
+	for (int i = 0;i < n;i++) { //bubble sort proc. will be used.
+		bool flag = false; //if it's already sorted.
+		for (int j = 0; j < n - i - 1; j++) {
+
+			if (c[j].getReal() > c[j + 1].getReal()){
+				flag = true;
+				Complex temp = c[j + 1];
+				c[j + 1] = c[j];
+				c[j] = temp;
+
+			}
+		}
+		if (!flag) {
+			return;
+		}
+	}
+	cout << "Real part is in sequence!" << endl; // real part is sorted and printed.
+	for (int i = 0;i < n;i++) {
+		cout << c[i].getReal() << endl;
+		}
+
+	for (int i = 0;i < n;i++) {//bubble sort proc. will be used.
+		bool flag = false;//if it's already sorted.
+		for (int j = 0; j < n - i - 1; j++) {
+
+			if (c[j].getImag() > c[j + 1].getImag()) {
+				flag = true;
+				Complex temp = c[j + 1];
+				c[j + 1] = c[j];
+				c[j] = temp;
+
+			}
+		}
+		if (!flag) {
+			return;
+		}
+	}
+
+	cout << "Imaginary part is in sequence!" << endl; // imaginary part is sorted and printed.
+	for (int i = 0;i < n;i++) {
+		cout << c[i].getImag() << endl;
+	}	
+
+}
+
+
+int main() {
+
+	int inum1;
+	double dnum1,dnum2,dnum3;
+	string str1 = " ";
+	
+
+	cout << "\n Enter Integer for the First Complex Number:";
+	cin >> inum1;
+	Complex complex1 = Complex(inum1); //first obj. int to complex
+	cout <<setprecision(1) <<complex1.getReal() << "+" << complex1.getImag() << "i" << endl; //print out
+
+	cout << "\n Enter Double for the Second Complex Number:";
+	cin >> dnum1;
+	Complex complex2 = Complex(dnum1); //second obj. double to complex
+	cout << setprecision(1) << complex2.getReal() << "+" << complex2.getImag() << "i" << endl;//print out
+
+	cout << "\n Enter Double for the Real part of Third Complex Number:";
+	cin >> dnum2;
+	cout << "\n Enter Double for the Imaginary part of Third Complex Number:";
+	cin >> dnum3;
+
+	Complex complex3 = Complex(dnum2, dnum3);// third obj. real and imaginary parts are taken from user.
+	cout << setprecision(1) << complex3.getReal() << "+" << complex3.getImag() << "i" << endl;//print out
+
+	cout << "\n Enter String to change it a Complex Number:" << endl;
+	getline(cin, str1); // taking string to convert complex from outside.
+
+	Complex complex4 = Complex(str1);// fourth obj. string to complex
+	cout << setprecision(1) << complex4.getReal() << "+" << complex4.getImag() << "i" << endl; // print out.
+
+	Complex carray[4] = { Complex(5),Complex(5.1),Complex(5.2,5.3),Complex("5.4+5.5i") }; // array is formed from complex items.
+
+	complexSortPrint(carray, 4); // to sort the array, complex array and number of character are given as a parameter.
+
+	return 0;
+}
+
+
+*******************************Complex Class*********************************************************************
+
+
+//'Complex' class is formed for describing the complex number.
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class Complex { //name of the class
+
+public:
+	Complex() { //default constructor (default values of r and i are 0. 
+		r = 0;
+		i = 0;
+	}
+	explicit Complex(int r) { // conversion constructor to converse int to complex
+		this->r = r;
+		i = 0;
+	}
+	explicit Complex(double r) { //conversion constructor to converse double to complex
+		this->r = r;
+		i = 0;
+	}
+	 Complex(const string& str) { //conversion constructor to converse string to complex
+		
+		int find = 0,find_i=0; //find for the index of '+/-' -- find_i for the index of 'i'
+		string str1,str2; // two substrings for the before and after of '+/-' operators.
+		
+		
+		find = str.find_first_of("+-"); // 'turn the index of first '+/-' operators.
+			
+            if (find == 0) { // if it is in the first index
+				if (str[find] == '+') { // if it is '+'
+					find_i = str.find('i', find + 1); //will find the 'i' after the operator
+					str2 = str.substr(find + 1, find_i - 1);// substring for the imaginary part
+					this->r = 0; // real part is 0
+					this->i = +stod(str2); // imaginary part is str2
+				}
+				else if (str[find] == '-') {// if it is '-'
+					find_i = str.find('i', find + 1); //will find the 'i' after the operator
+					str2 = str.substr(find + 1, find_i - 1); // substring for the imaginary part
+					this->r = 0; // real part is 0
+					this->i =-stod(str2); // imaginary part is str2
+				}
+			}
+			else if (find != 0) {  // if it's not the in the first index 
+				if (str[find] == '+') { // if it is '+'
+					find_i = str.find('i');//will find the 'i' after the operator
+					str1 = str.substr(0, find - 1);// substring for the real part
+					str2 = str.substr(find + 1, find_i - 1);// substring for the imaginary part
+					this->r = stod(str1);//double to real part str1
+					this->i = +stod(str2);//double to imaginary part str2
+				}
+				if (str[find] == '-') {// if it is '+'
+					find_i = str.find('i');//will find the 'i' after the operator
+					str1 = str.substr(0, find - 1);// substring for the real part
+					str2 = str.substr(find + 1, find_i - 1);// substring for the imaginary part
+					this->r = stod(str1);//double to real part str1
+					this->i = -stod(str2);//double to imaginary part str2
+				}
+			}
+			else { // if it'snt prompted true.Default value will be kept.
+				r = 0;
+				i = 0;
+			}
+		
+	}
+	 Complex(double r, double i) { // if two double value added, will change the data member of class 
+		this->r = r;
+		this->i = i;
+	}
+	 double getReal()const { //getter for the real part of the number
+		 return r;
+	}
+	 double getImag()const { //getter for the imaginary part of the number
+		 return i;
+	 }
+	 void setReal(double r) { //setter for the real part
+		 this->r = r;
+	 }
+	 void setImag(double i) { //setter for the imaginary part
+		 this->i = i;
+	 }
+	 Complex add(Complex a) { // add function to give sums of two complex numbers
+		 Complex Add;
+		 Add.r += a.r;
+		 Add.i += a.i;
+		 return Add;
+	 }
+	 Complex sub(Complex a) { //sub funct. to substract two complex numbers
+		 Complex Sub;
+		 Sub.r += a.r;
+		 Sub.i += a.i;
+		 return Sub;
+	 }
+	 Complex mult(Complex a) { //mult func. to multipy two complex numbers
+		 Complex Mult;
+		 Mult.r += a.r;
+		 Mult.i += a.i;
+		 return Mult;
+	 }
+	 Complex div(Complex a) { // div funct. to divide two complex numbers
+		 Complex Div;
+		 Div.r += a.r;
+		 Div.i += a.i;
+		 return Div;
+	 }
+	 void print(double r,double i) { // print to out
+		 cout << r << "+" << i <<"i"<< endl << endl;
+			 
+	 }
+private:
+
+	double r=0, i=0; //private data members
+
+};
+
+void complexSortPrint(Complex c[], int n);
