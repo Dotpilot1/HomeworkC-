@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <chrono>
+#include <map>
+#include <math.h>
+
+using namespace std;
+
+//aşağıdaki satırları yoruma alarak kodunuzu farklı şekillerde test edebilirsiniz.
+#define _TEST_ITERATIVE_
+#define _TEST_RECURSIVE_
+
+long long recursiveFunction(int numberOfStones) // özyinelemeli fonksiyon ile çözüm oluşturuldu.
+{
+	 static map<long long , long long > memo; // vektör yapısı oluşturuldu.
+	 if (numberOfStones == 0) { // 0 için 1 değeri
+		 return 1;
+	}
+	if (numberOfStones <= 2 && numberOfStones>0 ) { // bu aralıkta değerler için atama yapıldı.
+		return numberOfStones;
+	}
+	if (memo.count(numberOfStones) > 0) {
+		return memo[numberOfStones];
+	} // takip eden 3 değerin toplamı özyinelemeli olarak çağrıldı.
+    long long result = recursiveFunction(numberOfStones-3) + recursiveFunction(numberOfStones-2) + recursiveFunction(numberOfStones-1);
+	memo[numberOfStones] = result;
+	return result;
+}
+
+/* Yinelemeli olarak zip zip kurbaganin kac farkli yoldan gittigini bulan fonksiyondurf.
+ */
+long long iterativeFunction(int numberOfStones)
+{
+	static map<long long, long long > memo;
+
+	if (numberOfStones == 0 || numberOfStones==1) { // 0 ve 1 1 değeri döndürür.
+		 memo[0] = 1;
+		 memo[1] = 1;
+		 return 1;
+	}
+	if (numberOfStones == 2) { // 2 için 2 değeri döndüren bir yapı
+	    memo[2] = 2;
+		return 2;
+	}
+	for (int i = 3;i <= numberOfStones;i++) { // döngü içinde kendinden önceki 3 değeri toplayan ve atama yapan yapı
+		memo[i] = memo[i - 1] + memo[i - 2] + memo[i - 3];
+	}
+	long long result = memo[numberOfStones]; // istenen sonuç
+	return result;
+}
+
+
+
+int main()
+{
+	const int MAX_NUMBER_OF_STONES{ 72 };
+
+	cout << setfill(' ');
+
+	cout.imbue(locale(""));
+
+	for (auto i = 1; i <= MAX_NUMBER_OF_STONES; ++i)
+	{
+
+#ifdef _TEST_ITERATIVE_
+		{
+			long long tempResult = { 0 };
+
+			auto start = std::chrono::steady_clock::now();
+			tempResult = iterativeFunction(i);
+			auto stop = std::chrono::steady_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+
+			cout << "iterative" << setw(4) << i << " -> " << tempResult << " ( " << duration << "us )\n";
+		}
+#endif
+
+#ifdef _TEST_RECURSIVE_
+		{
+			long long tempResult = { 0 };
+
+			auto start = std::chrono::steady_clock::now();
+			tempResult = recursiveFunction(i);
+			auto stop = std::chrono::steady_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+			cout << "recursive" << setw(4) << i << " -> " << tempResult << " ( " << duration << "us )\n\n";
+		}
+#endif
+
+	}
+
+	return 0;
+}
